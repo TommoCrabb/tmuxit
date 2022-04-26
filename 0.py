@@ -22,13 +22,13 @@ def tmux_init(go=0,sesh="run"):
         run(["tmux", "new-session", "-d", "-s", sesh])
         tmux_init(go=1)
 
-sesh = "run"
+sesh = "run" # The name of the tmux session.
 
 # Exit if can't find tmux
 if which("tmux") == None:
     fatal("Unable to find tmux on your system.")
 
-tmux_init(sesh) # Start tmux session
+tmux_init(sesh=sesh) # Start the tmux session
 
 # Run command in new tmux window.
 c = ["tmux","new-window","-t",sesh,]
