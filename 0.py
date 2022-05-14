@@ -11,16 +11,18 @@ from shutil import which
 def fatal(msg):
     '''Print an error message and exit'''
     print("FATAL ERROR:", msg, "EXITING", sep="\n")
+    exit()
 
-def tmux_init(go=0,sesh="run"):
+def tmux_init(go=0, sesh="run"):
     '''Start a tmux session named "sesh" if it doesn't already
     exist. Exit if the session fails to start.'''
     x = run(["tmux", "has-session", "-t", sesh])
     if x.returncode == 1:
-        if go == 1:
+        if go == 0:
+            run(["tmux", "new-session", "-d", "-s", sesh])
+            tmux_init(go=1)
+        else:
             fatal("Failed to start tmux session.")
-        run(["tmux", "new-session", "-d", "-s", sesh])
-        tmux_init(go=1)
 
 sesh = "run" # The name of the tmux session.
 
@@ -31,6 +33,6 @@ if which("tmux") == None:
 tmux_init(sesh=sesh) # Start the tmux session
 
 # Run command in new tmux window.
-c = ["tmux","new-window","-t",sesh,]
+c = ["tmux", "new-window", "-t", sesh,]
 c.extend(argv[1:])
 run(c)
